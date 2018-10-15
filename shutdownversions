@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+
+# Written by Dong Yuan Yang (dyan263)
+
+import os
+import sys
+import shutil
+
+
+def main():
+    path = os.getcwd() + "/.versiondir"
+
+    shutil.rmtree(path)
+    print ".versiondir deleted"
+
+    os.system('fusermount -u mount')
+    print "Unmounted directory"
+
+
+if __name__ == '__main__':
+    main()

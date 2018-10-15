@@ -70,3 +70,11 @@ saving with nano
 ** write: /three.txt **
 ** flush /three.txt **
 ** release /three.txt **
+
+If you delete all versions if a file is deleted in the mount directory:
+pros - you free up the storage space
+cons - you lose all chance of recovering files
+
+If you DO NOT delete all versions on file deletion from mount:
+pros - You can still recover previous versions if you wished to
+cons - If you intended to never use that file again, you will still have the other versions taking up unnecessary storage space

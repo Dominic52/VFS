@@ -1,0 +1,43 @@
+#!/usr/bin/env python
+
+# Written by Dong Yuan Yang (dyan263)
+
+import os
+import sys
+import re
+
+
+def sorty(arr):
+    def con(text): return int(text) if text.isdigit() else text
+
+    def alphanum(key): return [con(c) for c in re.split('([0-9]+)', key)]
+    return sorted(arr, key=alphanum)
+
+
+def main(*argv):
+    if len(argv) != 1:
+        print "Incorrect number of arguments"
+        return
+
+    path = os.getcwd() + "/.versiondir"
+    files = os.listdir(path)
+    filearr = []
+    for i in files:
+        spl = i.split(".")
+        if len(spl) == 3:
+            fn = spl[0] + "." + spl[1]
+        elif len(spl) == 2:
+            fn = spl[0]
+        else:
+            print "you've messed up"
+        if fn == argv[0]:
+            filearr.append(i)
+
+    filearr = sorty(filearr)
+
+    for i in filearr:
+        print i
+
+
+if __name__ == '__main__':
+    main(sys.argv[1])

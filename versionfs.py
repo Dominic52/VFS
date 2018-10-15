@@ -1,4 +1,7 @@
 #!/usr/bin/env python
+
+# Edited by Dong Yuan Yang (dyan263)
+
 from __future__ import with_statement
 
 import logging
@@ -35,7 +38,7 @@ class VersionFS(LoggingMixIn, Operations):
         try:
             a = int(partial[-1])
         except:
-            if partial not in ["autorun.inf", ""] and partial[0] != "." and partial[-5:] != ".temp":
+            if partial not in ["autorun.inf", ""] and partial[0] != "." and partial[-2:] != ".t":
                 partial = partial + ".1"
 
         path = os.path.join(self.root, partial)
@@ -83,7 +86,7 @@ class VersionFS(LoggingMixIn, Operations):
 
         unique = []
         for r in dirents:
-            if r[-5:] != ".temp":
+            if r[-2:] != ".t":
                 try:
                     a = int(r[-1])
                     if r[:-2] in unique:
@@ -152,7 +155,7 @@ class VersionFS(LoggingMixIn, Operations):
     def open(self, path, flags):
         print '** open:', path, '**'
         path = path[1:]
-        temppath = path + ".temp"
+        temppath = path + ".t"
         dest = self._full_path(temppath)
         full_path = self._full_path(path)
         copyfile(full_path, dest)
@@ -193,7 +196,7 @@ class VersionFS(LoggingMixIn, Operations):
 
         versions = []
         for i in files:
-            if i[:-2] == partial or i[-5:] == ".temp":
+            if i[:-2] == partial or i[-2:] == ".t":
                 # Prev ver exists
                 versions.append(i)
 
@@ -205,33 +208,49 @@ class VersionFS(LoggingMixIn, Operations):
         verVals = ["2", "3", "4", "5"]
         if len(versions) > 1:
             new = new_path + ".1"
-            old = new_path + ".temp"
+            old = new_path + ".t"
 
             diff = not filecmp.cmp(new, old, shallow=False)
 
             if diff:
                 for i in versions:
 
-                    if i[-5:] != ".temp":
+                    if i[-2:] != ".t":
                         spl = i.split(".")
 
-                        if spl[2] in verVals:
+                        if len(spl) == 3:
+                            if spl[2] in verVals:
 
-                            newVal = int(spl[2]) + 1
+                                newVal = int(spl[2]) + 1
 
-                            spl = spl[:2]
-                            spl.append(str(newVal))
+                                spl = spl[:2]
+                                spl.append(str(newVal))
 
-                            newer = ".".join(spl)
+                                newer = ".".join(spl)
 
-                            oldy = full_path + i
-                            newly = full_path + newer
-                            os.rename(oldy, newly)
+                                oldy = full_path + i
+                                newly = full_path + newer
+                                os.rename(oldy, newly)
+                        elif len(spl) == 2:
+                            if spl[1] in verVals:
+
+                                newVal = int(spl[1]) + 1
+
+                                spl = spl[:1]
+                                spl.append(str(newVal))
+
+                                newer = ".".join(spl)
+
+                                oldy = full_path + i
+                                newly = full_path + newer
+                                os.rename(oldy, newly)
+                        else:
+                            print "You've entered a really messed up file name, please why are you trying to screw me over"
 
                 newer = new_path + ".2"
                 os.rename(old, newer)
             else:
-                old = new_path + ".temp"
+                old = new_path + ".t"
                 os.remove(old)
         return os.close(fh)
 

@@ -1,0 +1,41 @@
+#!/usr/bin/env python
+
+# Written by Dong Yuan Yang (dyan263)
+
+import os
+import sys
+
+
+def main(*argv):
+    if len(argv) != 2:
+        print "Incorrect number of arguments"
+        return
+
+    path = os.getcwd() + "/.versiondir"
+    files = os.listdir(path)
+    filearr = []
+    for i in files:
+        spl = i.split(".")
+        if len(spl) == 3:
+            fn = spl[0] + "." + spl[1]
+        elif len(spl) == 2:
+            fn = spl[0]
+        else:
+            print "you've messed up"
+        if fn == argv[0]:
+            filearr.append(i)
+
+    filename = argv[0] + "." + argv[1]
+
+    if filename in filearr:
+        f = open(".versiondir/" + filename, 'r')
+        contents = f.read()
+        print contents
+
+        f.close()
+    else:
+        print "Invalid file version"
+
+
+if __name__ == '__main__':
+    main(sys.argv[1], sys.argv[2])
